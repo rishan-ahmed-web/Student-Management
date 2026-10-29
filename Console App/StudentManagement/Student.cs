@@ -31,6 +31,13 @@ namespace StudentManagement
                                Marks >= 40 ? "C" :
                                Marks >= 33 ? "D" : "F";
 
+        public void UpdateMarks(int newMarks)
+        {
+            if (newMarks < 0 || newMarks > 100)
+                throw new ArgumentException("Marks must be between 0 to 100");
+            Marks = newMarks;
+        }
+
         public void ShowInfo()
         {
             Console.WriteLine($"ID: {Id} | Name : {Name} | Marks: {Marks} | Grade: {Grade}");
