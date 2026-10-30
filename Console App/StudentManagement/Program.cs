@@ -1,9 +1,7 @@
 ﻿
 using StudentManagement;
 
-
-
-List<Student> students = new List<Student>();
+IStudentService services = new StudentService();
 
 while (true)
 {
@@ -25,11 +23,6 @@ while (true)
                 Console.Write("Enter  id : ");
                 string id = Console.ReadLine() ?? "";
 
-                if (students.Any(s => s.Id == id))
-                {
-                    throw new ArgumentException("Id  already exists");
-                }
-
                 Console.Write("Enter name : ");
                 string name = Console.ReadLine() ?? "";
 
@@ -38,8 +31,7 @@ while (true)
 
                 if (int.TryParse(input, out int marks))
                 {
-
-                    students.Add(new Student(id, name, marks));
+                    services.Add(new Student(id,name,marks));
                     Console.WriteLine("Added student");
                 }
                 else
@@ -50,18 +42,23 @@ while (true)
 
             case "2":
                 // View all student
-                foreach (Student student in students)
-                {
-                    student.ShowInfo();
-                }
+                var students = services.GetAll();
+                if(students.Count == 0)
+                    Console.WriteLine("No students found");
+                else
+                    foreach (var student in students)
+                    {
+                        student.ShowInfo();
+                    }
+
                 break;
 
             case "3":
                 // Search student
                 Console.Write("Search student: ");
                 string search = Console.ReadLine() ?? "";
-                var results = students.Where(s => s.Name.Contains(search,StringComparison.OrdinalIgnoreCase))
-                              .ToList();
+
+                var results = services.SearchByName(search);
                 
                 if(results.Count > 0)
                 {
@@ -80,20 +77,19 @@ while (true)
             case "4":
                 // Update marks
                 Console.Write("Enter id : ");
-                string inputid = Console.ReadLine() ?? "";
-                var foundStudent = students.FirstOrDefault(s => s.Id == inputid);
-                if(foundStudent == null)
-                {
-                    Console.WriteLine("Student not found");
-                    break;
-                    
-                }
+                string inputId = Console.ReadLine() ?? "";
+                
                 Console.Write("Enter new marks: ");
                 string newMarksInput = Console.ReadLine() ?? "";
 
                 if (int.TryParse(newMarksInput, out int newMarks))
                 {
-                    foundStudent.UpdateMarks(newMarks);
+                    bool updated = services.UpdateMarks(inputId, newMarks);
+                    if(updated)
+                        Console.WriteLine("Marks Updated");
+                    else
+                        Console.WriteLine("Student not found");
+                    
                     Console.WriteLine("Update successful");
                 }
                 else
@@ -107,16 +103,11 @@ while (true)
                 Console.Write("Enter id : ");
                 string deleteId = Console.ReadLine() ?? "";
 
-                var studentToDelete = students.FirstOrDefault( s => s.Id == deleteId);
-
-                if(studentToDelete == null)
-                {
-                    Console.WriteLine("Id not found");
-                    break;
-                }
-
-                students.Remove(studentToDelete);
-                Console.WriteLine("Delete success");
+                bool deleted = services.DeleteStudent(deleteId);
+                if (deleted)
+                    Console.WriteLine("Student delete success");
+                else
+                    Console.WriteLine("Student not found");
 
                 break;
 
