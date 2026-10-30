@@ -12,6 +12,9 @@ while (true)
         Console.WriteLine("3. Search student");
         Console.WriteLine("4. Update marks");
         Console.WriteLine("5. Delete student");
+        Console.WriteLine("6. Top 3 student");
+        Console.WriteLine("7. Average Marks");
+        Console.WriteLine("8. Grade Report");
         Console.WriteLine("0. Exit");
         Console.Write("Choose: ");
         string choice = Console.ReadLine() ?? "";
@@ -110,6 +113,39 @@ while (true)
                     Console.WriteLine("Student not found");
 
                 break;
+
+            case "6":
+
+                Console.WriteLine("============Top 3 Student=============");
+                var topStudent = services.GetTopStudents(3);
+                foreach(var top in topStudent)
+                {
+                    Console.WriteLine($"Name: {top.Name} | Marks: {top.Marks} | Grade: {top.Grade}");
+                }
+                break;
+
+            case "7":
+                Console.WriteLine("==========Average Marks==============");
+                var average = services.GetAverage();
+                Console.WriteLine($"Average Marks: {average:F2}");
+                break;
+
+            case "8":
+                Console.WriteLine("========= Grade Report ========");
+                var report = services.GetGradeReport();
+                if(report.Count == 0)
+                {
+                    Console.WriteLine("No students found");
+                }
+                else
+                {
+                    foreach(var item in report)
+                    {
+                        Console.WriteLine($"Grade: {item.Key} | Students: {item.Value}");
+                    }
+                }
+                break;
+
 
             case "0":
                 return;

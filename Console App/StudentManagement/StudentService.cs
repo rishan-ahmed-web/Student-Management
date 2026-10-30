@@ -43,7 +43,7 @@ namespace StudentManagement;
         }
 
      public bool DeleteStudent(string id)
-    {
+      {
         var deleteStudent = _students.FirstOrDefault(s => s.Id == id);
         if(deleteStudent == null)
         {
@@ -51,7 +51,29 @@ namespace StudentManagement;
         }
          _students.Remove(deleteStudent);
         return true;
+     }
+       
+     public List<Student> GetTopStudents(int count)
+    {
+       return _students.OrderByDescending(s => s.Marks)
+                                   .Take(count)
+                                   .ToList();
     }
-        
+
+    public double GetAverage()
+    {
+        if(_students.Count == 0)
+            return 0;
+
+        return _students.Average(s =>  s.Marks);
+    }
+
+    public Dictionary<string,int> GetGradeReport()
+    {
+        return _students.GroupBy(s => s.Grade)
+                        .ToDictionary(g => g.Key, g => g.Count());
+    }
+
+
     }
 

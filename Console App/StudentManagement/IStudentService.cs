@@ -11,5 +11,8 @@ namespace StudentManagement;
         List<Student> SearchByName (string name);
         bool UpdateMarks(string id, int newMarks);
         bool DeleteStudent(string id);
+        List<Student> GetTopStudents(int count);
+        double GetAverage();
+       Dictionary<string, int> GetGradeReport();
     }
 
