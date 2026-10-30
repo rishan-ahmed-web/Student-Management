@@ -13,6 +13,7 @@ while (true)
         Console.WriteLine("2. View all student");
         Console.WriteLine("3. Search student");
         Console.WriteLine("4. Update marks");
+        Console.WriteLine("5. Delete student");
         Console.WriteLine("0. Exit");
         Console.Write("Choose: ");
         string choice = Console.ReadLine() ?? "";
@@ -99,6 +100,23 @@ while (true)
                 {
                     Console.WriteLine("Please enter a valid number");
                 }
+
+                break;
+
+            case "5":
+                Console.Write("Enter id : ");
+                string deleteId = Console.ReadLine() ?? "";
+
+                var studentToDelete = students.FirstOrDefault( s => s.Id == deleteId);
+
+                if(studentToDelete == null)
+                {
+                    Console.WriteLine("Id not found");
+                    break;
+                }
+
+                students.Remove(studentToDelete);
+                Console.WriteLine("Delete success");
 
                 break;
 
