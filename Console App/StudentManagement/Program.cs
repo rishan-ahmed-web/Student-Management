@@ -41,6 +41,7 @@ while (true)
                 {
                     Console.WriteLine("Please enter a valid number ");
                 }
+               
                 break;
 
             case "2":

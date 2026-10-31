@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 
 namespace StudentManagement;
 
     public class StudentService : IStudentService
     {
+       
         private readonly List<Student> _students = new();
+        private const string FilePath = "students.json";
+        
+       public StudentService() { Load(); }
 
-        public void Add(Student student)
+    public void Add(Student student)
         {
             if(_students.Any(s => s.Id == student.Id))
             {
                 throw new ArgumentException("Id already exists");
             }
             _students.Add(student);
+            Save();
         }
 
         public List<Student> GetAll()
         {
           return _students.ToList();
+         
         }
 
         public List<Student> SearchByName(string name)
@@ -38,9 +46,11 @@ namespace StudentManagement;
                 return false;
             }
             foundStudent.UpdateMarks(newMarks);
+            Save();
             return true;
+             
 
-        }
+    }
 
      public bool DeleteStudent(string id)
       {
@@ -50,8 +60,10 @@ namespace StudentManagement;
             return false;
         }
          _students.Remove(deleteStudent);
+        Save();
         return true;
-     }
+      
+    }
        
      public List<Student> GetTopStudents(int count)
     {
@@ -73,7 +85,28 @@ namespace StudentManagement;
         return _students.GroupBy(s => s.Grade)
                         .ToDictionary(g => g.Key, g => g.Count());
     }
+    private void Save()
+    {
+        string json = JsonSerializer.Serialize(_students);
+        File.WriteAllText(FilePath, json);
+       
+    }
 
+    private void Load()
+    {
+        
+        if (!File.Exists(FilePath))
+        {
+            return;
+        }
+
+        string text = File.ReadAllText(FilePath);
+
+        var loaded = JsonSerializer.Deserialize<List<Student>>(text) ?? new List<Student>();
+        _students.AddRange(loaded);
+        
+    }
+    
 
     }
 
